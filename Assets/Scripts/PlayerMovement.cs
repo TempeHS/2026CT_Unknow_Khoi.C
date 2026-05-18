@@ -6,9 +6,11 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 8f;
     private float jumpPower = 16f;
     private bool isFacingRight = true;
+    private bool jumpBuffer = false;
 
-    [SerializeField] private RigidBody2D rb;
+    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
+    [SerializeField] private Transform jumpBufferCheck;
     [SerializeField] private LayerMask groundLayer;
 
     void Update()
@@ -17,12 +19,24 @@ public class PlayerMovement : MonoBehaviour
 
         if(Input.GetButtonDown("Jump") && IsGrounded())
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
         }
 
-        if(Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+        if(Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0f)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+        }
+
+        if(Input.GetButtonDown("Jump") && CanJumpBuffer())
+        {
+            jumpBuffer = true;
+        }
+
+
+        if(jumpBuffer == true && IsGrounded())
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
+            jumpBuffer = false;
         }
 
         Flip();
@@ -30,12 +44,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
     }
 
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    }
+
+    private bool CanJumpBuffer()
+    {
+        return Physics2D.OverlapCircle(jumpBufferCheck.position, 0.2f, groundLayer);
     }
 
     private void Flip()
