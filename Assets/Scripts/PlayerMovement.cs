@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,29 +18,30 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if(Input.GetButtonDown("Jump") && IsGrounded())
+        if (Input.GetButtonDown("Jump") && (IsGrounded() || (rb.linearVelocity.y < 0f && rb.linearVelocity.y > -3f)))
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
         }
 
-        if(Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0f)
+        if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
         }
 
-        if(Input.GetButtonDown("Jump") && CanJumpBuffer())
+        if (Input.GetButtonDown("Jump") && CanJumpBuffer())
         {
             jumpBuffer = true;
         }
 
 
-        if(jumpBuffer == true && IsGrounded())
+        if (jumpBuffer == true && IsGrounded())
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
             jumpBuffer = false;
         }
 
         Flip();
+
     }
 
     private void FixedUpdate()
