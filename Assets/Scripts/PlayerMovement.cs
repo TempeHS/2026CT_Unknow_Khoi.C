@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 groundCheckSize = new Vector2(0.95f, 1f);
     private int health = 1000;
 
+    public HealthBar healthBarRef;
+
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform jumpBufferCheck;
@@ -21,8 +23,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
-
-        Debug.Log(health);
 
         if (!IsGrounded())
         {
@@ -54,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (DamageCheck())
         {
-            health -= 1;
+            healthBarRef.UpdateHealth(-1f);
         }
 
         if (Input.GetKeyDown(KeyCode.R)) {

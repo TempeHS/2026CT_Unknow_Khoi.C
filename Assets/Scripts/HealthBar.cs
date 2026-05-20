@@ -16,9 +16,10 @@ public class HealthBar : MonoBehaviour
 
     public void UpdateHealth(float amount)
     {
-        currentHealth += maxHealth;
+        currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
         UpdateHealthBar();
+        Debug.Log(currentHealth);
     }
 
     private void UpdateHealthBar()
