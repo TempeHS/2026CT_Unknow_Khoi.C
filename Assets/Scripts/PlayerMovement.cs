@@ -65,6 +65,19 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (DamageCheck())
+        {
+            Vector3 contactPoint = collision.GetContact(0).point;
+            Vector2 kbDir = (transform.position - contactPoint).normalized;
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(kbDir * 10, ForceMode2D.Impulse);
+            
+            Debug.Log("Player knocked back in direction: " + kbDir);
+        }
+    }
+
     private void FixedUpdate()
     {
         if (rb.linearVelocity.y < 50f)
@@ -87,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool DamageCheck()
     {
-        return Physics2D.OverlapBox(transform.position, groundCheckSize, 0f, obstacleLayer);
+        return Physics2D.OverlapBox(transform.position, new Vector2(1f, 1f), 0f, obstacleLayer);
     }
 
     private void Flip()
